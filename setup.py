@@ -4,7 +4,7 @@
 from distutils.core import setup
 
 setup(
-    name='pxl',
+    name='PXL',
     version='0.0.1',
     author='Pete Bachant',
     author_email='petebachant@gmail.com',
