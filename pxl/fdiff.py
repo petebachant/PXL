@@ -20,6 +20,8 @@ def second_order_diff(arr, x):
     and 2nd order backward difference for last point, returning an array the
     same length as the input array.
     """
+    # Convert to array, so this will work with pandas Series
+    arr = np.array(arr)
     # Calculate dx for forward diff point
     dxf = (x[2] - x[0])/2
     # Calculate dx for backward diff point
