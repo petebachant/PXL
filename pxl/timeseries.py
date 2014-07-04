@@ -117,12 +117,15 @@ def loadcsv(filename):
         data[key] = value.values
     return data
     
-def savehdf(filename, datadict, groupname="data", mode="a"):
+def savehdf(filename, datadict, groupname="data", mode="a", metadata=None):
     """Saves a dictionary of arrays to file--similar to how scipy.io.savemat 
     works."""
     with _h5py.File(filename, mode) as f:
         for key, value in datadict.iteritems():
             f[groupname + "/" + key] = value
+        if metadata:
+            for key, value in metadata.iteritems():
+                f[groupname].attrs[key] = value
         
 def loadhdf(filename, groupname="data", to_dataframe=False):
     """Loads all data from top level of HDF5 file--similar to how scipy.io.loadmat 
@@ -135,6 +138,18 @@ def loadhdf(filename, groupname="data", to_dataframe=False):
         return _pd.DataFrame(data)
     else:
         return data
+
+def save_hdf_metadata(filename, metadata, groupname="data", mode="a"):
+    """"Saves a dictionary of metadata to a group's attrs."""
+    with _h5py.File(filename, mode) as f:
+        for key, val in metadata.iteritems():
+            f[groupname].attrs[key] = val
+        
+def load_hdf_metadata(filename, groupname="data"):
+    """"Loads attrs of the desired group into a dictionary."""
+    with _h5py.File(filename, "r") as f:
+        data = dict(f[groupname].attrs)
+    return data
 
 def build_plane_arrays(x, y, qlist):
     """Builds a 2-D array out of data taken in the same plane, for contour
