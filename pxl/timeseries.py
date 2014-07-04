@@ -8,6 +8,7 @@ import numpy as np
 from scipy.signal import lfilter
 import json
 import pandas as pd
+import h5py as _h5py
 
 def sigmafilter(data, sigmas, passes):
     """Removes datapoints outside of a specified standard deviation range."""
@@ -114,6 +115,22 @@ def loadcsv(filename):
     data = {}
     for key, value in dataframe.iteritems():
         data[key] = value.values
+    return data
+    
+def savehdf(filename, datadict, groupname="data", mode="a"):
+    """Saves a dictionary of arrays to file--similar to how scipy.io.savemat 
+    works."""
+    with _h5py.File(filename, mode) as f:
+        for key, value in datadict.iteritems():
+            f[groupname + "/" + key] = value
+        
+def loadhdf(filename, groupname="data"):
+    """Loads all data from top level of HDF5 file--similar to how scipy.io.loadmat 
+    works."""
+    data = {}
+    with _h5py.File(filename, "r") as f:
+        for key, value in f[groupname].iteritems():
+            data[key] = np.array(value)
     return data
 
 def build_plane_arrays(x, y, qlist):
