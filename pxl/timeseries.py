@@ -7,7 +7,7 @@ from __future__ import division, print_function
 import numpy as np
 from scipy.signal import lfilter
 import json
-import pandas as pd
+import pandas as _pd
 import h5py as _h5py
 
 def sigmafilter(data, sigmas, passes):
@@ -105,13 +105,13 @@ def loadjson(filename, asnparrays=False):
     
 def savecsv(filename, datadict):
     """Save a dictionary of data to CSV."""
-    pd.DataFrame(datadict).to_csv(filename, index=False)
+    _pd.DataFrame(datadict).to_csv(filename, index=False)
     
 def loadcsv(filename):
     """Loads data from CSV file. Numpy arrays are converted
     if specified with the `asnparrays` keyword argument. Note that this only
     works to the second level of the dictionary. Returns a single dict."""
-    dataframe = pd.read_csv(filename)
+    dataframe = _pd.read_csv(filename)
     data = {}
     for key, value in dataframe.iteritems():
         data[key] = value.values
@@ -124,14 +124,17 @@ def savehdf(filename, datadict, groupname="data", mode="a"):
         for key, value in datadict.iteritems():
             f[groupname + "/" + key] = value
         
-def loadhdf(filename, groupname="data"):
+def loadhdf(filename, groupname="data", to_dataframe=False):
     """Loads all data from top level of HDF5 file--similar to how scipy.io.loadmat 
     works."""
     data = {}
     with _h5py.File(filename, "r") as f:
         for key, value in f[groupname].iteritems():
             data[key] = np.array(value)
-    return data
+    if to_dataframe:
+        return _pd.DataFrame(data)
+    else:
+        return data
 
 def build_plane_arrays(x, y, qlist):
     """Builds a 2-D array out of data taken in the same plane, for contour
