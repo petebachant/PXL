@@ -108,9 +108,8 @@ def savecsv(filename, datadict):
     _pd.DataFrame(datadict).to_csv(filename, index=False)
     
 def loadcsv(filename):
-    """Loads data from CSV file. Numpy arrays are converted
-    if specified with the `asnparrays` keyword argument. Note that this only
-    works to the second level of the dictionary. Returns a single dict."""
+    """Loads data from CSV file. Returns a single dict with column names as
+    keys."""
     dataframe = _pd.read_csv(filename)
     data = {}
     for key, value in dataframe.iteritems():
