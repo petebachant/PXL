@@ -29,4 +29,4 @@ def setpltparams(fontsize=23):
     matplotlib.rc('xtick', **{'major.pad':12})
 
 def set_default_fontsize(size=23):
-    matplotlib.rc("font", {"size" : size})
+    matplotlib.rc("font", size=size)
