@@ -23,8 +23,8 @@ def setpltparams(fontsize=16, latex=True):
         font = {"family" : "serif", "serif" : "cmr10", "size" : fontsize}
     else:
         font = {"size" : fontsize}
-    lines = {"markersize" : 9, "markeredgewidth" : 0.9,
-             "linewidth" : 2}
+    lines = {"markersize" : 9, "markeredgewidth" : 1,
+             "linewidth" : 1.2}
     legend = {"numpoints" : 1, "fontsize" : "small"}
     matplotlib.rc("text", usetex=latex)
     matplotlib.rc("font", **font)
