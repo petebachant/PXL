@@ -8,25 +8,29 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 def styleplot():
-    font = {'family':'serif','serif':'cmr10','size':23}
-    lines = {'markersize':9, 'markeredgewidth':0.9}
-    legend = {'numpoints':1, 'fontsize': 'small'}
-    matplotlib.rc('text', usetex = True)
-    matplotlib.rc('font', **font)
-    matplotlib.rc('lines', **lines)
-    matplotlib.rc('legend', **legend)
-    matplotlib.rc('xtick', **{'major.pad':12})
+    font = {"family":"serif","serif":"cmr10","size":23}
+    lines = {"markersize":9, "markeredgewidth":0.9}
+    legend = {"numpoints":1, "fontsize": "small"}
+    matplotlib.rc("text", usetex = True)
+    matplotlib.rc("font", **font)
+    matplotlib.rc("lines", **lines)
+    matplotlib.rc("legend", **legend)
+    matplotlib.rc("xtick", **{"major.pad":12})
     plt.tight_layout()
 
-def setpltparams(fontsize=23):
-    font = {'family' : 'serif', 'serif' : 'cmr10', 'size' : fontsize}
-    lines = {'markersize' : 9, 'markeredgewidth' : 0.9}
-    legend = {'numpoints' : 1, 'fontsize' : 'small'}
-    matplotlib.rc('text', usetex = True)
-    matplotlib.rc('font', **font)
-    matplotlib.rc('lines', **lines)
-    matplotlib.rc('legend', **legend)
-    matplotlib.rc('xtick', **{'major.pad':12})
+def setpltparams(fontsize=16, latex=True):
+    if latex:
+        font = {"family" : "serif", "serif" : "cmr10", "size" : fontsize}
+    else:
+        font = {"size" : fontsize}
+    lines = {"markersize" : 9, "markeredgewidth" : 0.9,
+             "linewidth" : 2}
+    legend = {"numpoints" : 1, "fontsize" : "small"}
+    matplotlib.rc("text", usetex=latex)
+    matplotlib.rc("font", **font)
+    matplotlib.rc("lines", **lines)
+    matplotlib.rc("legend", **legend)
+    matplotlib.rc("xtick", **{"major.pad":12})
 
 def set_default_fontsize(size=23):
     matplotlib.rc("font", size=size)
