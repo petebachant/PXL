@@ -11,7 +11,20 @@ setup(
     packages=['pxl'],
     scripts=[],
     url='https://github.com/petebachant/pxl.git',
-    license='LICENSE',
+    license='GPL v3',
     description='Extra functions built on NumPy, SciPy, pandas, matplotlib, etc.',
-    long_description=open('README.md').read()
+    long_description=open('README.md').read(),
+    install_requires=["numpy", "scipy", "pandas", "matplotlib"],
+    classifiers=[
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Science/Research",
+        "Natural Language :: English",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3"]
 )
