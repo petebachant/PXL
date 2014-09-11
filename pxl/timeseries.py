@@ -19,7 +19,7 @@ def sigmafilter(data, sigmas, passes):
         data[data < meandata-sigmas*sigma] = np.nan
     return data
 
-def psd(t, data, window=None):
+def psd(t, data, window=None, n_band_average=1):
     """Computes one-sided power spectral density. Subtracts mean.
        Returns f, psd.
        
@@ -36,6 +36,13 @@ def psd(t, data, window=None):
     f = f[0:N/2]
     psd = (2*dt/N)*abs(y)**2
     psd = np.real(psd[0:N/2])
+    if n_band_average > 1:
+        f_raw, s_raw = f*1, psd*1
+        f = np.zeros(len(f_raw)//n_band_average)
+        psd = np.zeros(len(f_raw)//n_band_average)
+        for n in range(len(f_raw)//n_band_average):
+            f[n] = np.mean(f_raw[n*n_band_average:(n+1)*n_band_average])
+            psd[n] = np.mean(s_raw[n*n_band_average:(n+1)*n_band_average])
     return f, psd
     
 def runningstd(t, data, samples, overlap=None):
@@ -193,14 +200,19 @@ def autocorr(x, t, tau1, tau2):
     return corr(x, x, t, tau1, tau2)
     
 if __name__ == "__main__":
+    # Test band averaging with `psd` function
+    from scipy.signal import firwin
     import matplotlib.pyplot as plt
-    t = np.linspace(0, 1, num=1000)
-    fs = 1.0/(t[1] - t[0])
-    y = np.sin(2*np.pi*t) #+ 0.5*np.sin(5*t)
-    y = np.random.rand(len(t))
-    y2 = np.random.rand(len(t))
-    tau, rho = corr(y, y, t, -0.5, 0.5)
-    print(rho.max())
-    plt.close("all")
-    plt.figure()
-    plt.plot(tau, rho)
+    n = 10000
+    ts = np.random.randn(n)
+    t = np.linspace(0.0, 1.0, num=n)
+    N = 5
+    Fc = 50
+    Fs = 1500
+    h = firwin(numtaps=N, cutoff=40, nyq=Fs/2)
+    ts = lfilter(h, 1.0, ts) # 'x' is the time-series data you are filtering
+    f, spec = psd(t, ts, n_band_average=1)
+    f2, spec2 = psd(t, ts, n_band_average=20)
+    plt.plot(f, spec)
+    plt.hold(True)
+    plt.plot(f2, spec2)
