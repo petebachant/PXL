@@ -200,19 +200,4 @@ def autocorr(x, t, tau1, tau2):
     return corr(x, x, t, tau1, tau2)
     
 if __name__ == "__main__":
-    # Test band averaging with `psd` function
-    from scipy.signal import firwin
-    import matplotlib.pyplot as plt
-    n = 10000
-    ts = np.random.randn(n)
-    t = np.linspace(0.0, 1.0, num=n)
-    N = 5
-    Fc = 50
-    Fs = 1500
-    h = firwin(numtaps=N, cutoff=40, nyq=Fs/2)
-    ts = lfilter(h, 1.0, ts) # 'x' is the time-series data you are filtering
-    f, spec = psd(t, ts, n_band_average=1)
-    f2, spec2 = psd(t, ts, n_band_average=20)
-    plt.plot(f, spec)
-    plt.hold(True)
-    plt.plot(f2, spec2)
+    pass
