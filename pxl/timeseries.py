@@ -123,15 +123,20 @@ def loadcsv(filename):
         data[key] = value.values
     return data
     
-def savehdf(filename, datadict, groupname="data", mode="a", metadata=None):
+def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
+            as_dataframe=False):
     """Saves a dictionary of arrays to file--similar to how scipy.io.savemat 
     works."""
-    with _h5py.File(filename, mode) as f:
-        for key, value in datadict.items():
-            f[groupname + "/" + key] = value
-        if metadata:
-            for key, value in metadata.items():
-                f[groupname].attrs[key] = value
+    if as_dataframe:
+        df = _pd.DataFrame(datadict)
+        df.to_hdf(filename, groupname)
+    else:
+        with _h5py.File(filename, mode) as f:
+            for key, value in datadict.items():
+                f[groupname + "/" + key] = value
+            if metadata:
+                for key, value in metadata.items():
+                    f[groupname].attrs[key] = value
         
 def loadhdf(filename, groupname="data", to_dataframe=False):
     """Loads all data from top level of HDF5 file--similar to how scipy.io.loadmat 
