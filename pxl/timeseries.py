@@ -84,11 +84,11 @@ def average_over_area(q, x, y):
 def savejson(filename, datadict):
     """Saves data from a dictionary in JSON format. Note that this only
     works to the second level of the dictionary with Numpy arrays."""
-    for key, value in datadict.iteritems():
+    for key, value in datadict.items():
         if type(value) == np.ndarray:
             datadict[key] = value.tolist()
         if type(value) == dict:
-            for key2, value2 in value.iteritems():
+            for key2, value2 in value.items():
                 if type(value2) == np.ndarray:
                     datadict[key][key2] = value2.tolist()
     with open(filename, "w") as f:
@@ -101,11 +101,11 @@ def loadjson(filename, asnparrays=False):
     with open(filename) as f:
         data = json.load(f)
     if asnparrays:
-        for key, value in data.iteritems():
+        for key, value in data.items():
             if type(value) is list:
                 data[key] = np.asarray(value)
             if type(value) is dict:
-                for key2, value2 in value.iteritems():
+                for key2, value2 in value.items():
                     if type(value2) is list:
                         data[key][key2] = np.asarray(value2)
     return data
@@ -119,7 +119,7 @@ def loadcsv(filename):
     keys."""
     dataframe = _pd.read_csv(filename)
     data = {}
-    for key, value in dataframe.iteritems():
+    for key, value in dataframe.items():
         data[key] = value.values
     return data
     
@@ -127,10 +127,10 @@ def savehdf(filename, datadict, groupname="data", mode="a", metadata=None):
     """Saves a dictionary of arrays to file--similar to how scipy.io.savemat 
     works."""
     with _h5py.File(filename, mode) as f:
-        for key, value in datadict.iteritems():
+        for key, value in datadict.items():
             f[groupname + "/" + key] = value
         if metadata:
-            for key, value in metadata.iteritems():
+            for key, value in metadata.items():
                 f[groupname].attrs[key] = value
         
 def loadhdf(filename, groupname="data", to_dataframe=False):
@@ -138,7 +138,7 @@ def loadhdf(filename, groupname="data", to_dataframe=False):
     works."""
     data = {}
     with _h5py.File(filename, "r") as f:
-        for key, value in f[groupname].iteritems():
+        for key, value in f[groupname].items():
             data[key] = np.array(value)
     if to_dataframe:
         return _pd.DataFrame(data)
@@ -148,7 +148,7 @@ def loadhdf(filename, groupname="data", to_dataframe=False):
 def save_hdf_metadata(filename, metadata, groupname="data", mode="a"):
     """"Saves a dictionary of metadata to a group's attrs."""
     with _h5py.File(filename, mode) as f:
-        for key, val in metadata.iteritems():
+        for key, val in metadata.items():
             f[groupname].attrs[key] = val
         
 def load_hdf_metadata(filename, groupname="data"):
