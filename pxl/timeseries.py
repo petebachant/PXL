@@ -183,7 +183,7 @@ def build_plane_arrays(x, y, qlist):
         qlistp = qlistp[0]
     return xv, yv, qlistp
     
-def corr(x1, x2, t, tau1, tau2):
+def calc_corr_coeff(x1, x2, t, tau1, tau2):
     """Computes lagged correlation coefficient for two time series."""
     dt = t[1] - t[0]
     tau = np.arange(tau1, tau2+dt, dt)
@@ -201,8 +201,8 @@ def corr(x1, x2, t, tau1, tau2):
         rho[n] = np.mean(seg1*seg2)/seg1.std()/seg2.std()
     return tau, rho
 
-def autocorr(x, t, tau1, tau2):
-    return corr(x, x, t, tau1, tau2)
+def calc_autocorr_coeff(x, t, tau1, tau2):
+    return calc_corr_coeff(x, x, t, tau1, tau2)
     
 if __name__ == "__main__":
     pass
