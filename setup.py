@@ -2,10 +2,11 @@
 # coding=utf-8
 
 from distutils.core import setup
+from pxl import __version__ as version
 
 setup(
     name='PXL',
-    version='0.0.1',
+    version=version,
     author='Pete Bachant',
     author_email='petebachant@gmail.com',
     packages=['pxl'],
@@ -26,5 +27,6 @@ setup(
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.3"]
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4"]
 )
