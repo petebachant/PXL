@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 from .. import timeseries
 from ..timeseries import *
 import matplotlib.pyplot as plt
@@ -32,3 +33,27 @@ def test_spectrum_band_averaging():
     plt.hold(True)
     plt.plot(f2, spec2)
     plt.show()
+    
+def test_average_over_area():
+    """Should result in a value of 1"""
+    print("Testing average_over_area")
+    x = np.array([-6.0, -2.0, -1.0, 0.0, 1.0, 2.0, 6.0])
+    y = np.array([-6.0, -2.0, -1.0, 0.0, 1.0, 2.0, 6.0])
+    q = np.ones((x.size, y.size))
+    ave = average_over_area(q, x, y)
+    print("Computed average is", ave)
+    if np.abs(ave - 1) < 1e-12: 
+        print("First test of average_over_area passed")
+    else:
+        print("First test of average_over_area failed")
+    # Now test something a bit harder
+    y = np.array([0., 1.])
+    q = np.array([[1.0, 0., 0., 0., 0., 0., 1.0],
+                  [1.0, 0., 0., 0., 0., 0., 1.0]])
+    ave = average_over_area(q, x, y)
+    print("Computed average is", ave)
+    if np.abs(ave - 0.33333333333333) < 1e-12:
+        print("Second test of average_over_area passed")
+    else:
+        print("Second test of average_over_area failed")
+    
