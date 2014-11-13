@@ -110,9 +110,14 @@ def loadjson(filename, asnparrays=False):
                         data[key][key2] = np.asarray(value2)
     return data
     
-def savecsv(filename, datadict):
+def savecsv(filename, datadict, mode="w"):
     """Save a dictionary of data to CSV."""
-    _pd.DataFrame(datadict).to_csv(filename, index=False)
+    if mode == "a" :
+        header = False
+    else:
+        header = True
+    with open(filename, mode) as f:
+        _pd.DataFrame(datadict).to_csv(f, index=False, header=header)
     
 def loadcsv(filename):
     """Loads data from CSV file. Returns a single dict with column names as
