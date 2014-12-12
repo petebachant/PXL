@@ -10,7 +10,7 @@ def test_autocorrelation():
     y = np.sin(2*np.pi*t) #+ 0.5*np.sin(5*t)
     y = np.random.rand(len(t))
     y2 = np.random.rand(len(t))
-    tau, rho = calc_autocorr_coeff(y, t, -0.5, 0.5)
+    tau, rho = autocorr_coeff(y, t, -0.5, 0.5)
     if np.abs(rho.max() - 1.0) < 1e-12:
         print("PASSED: Autocorrelation test 1")
     else:
@@ -61,4 +61,23 @@ def test_average_over_area():
         print("PASSED: Second test of average_over_area")
     else:
         print("FAILED: Second test of average_over_area")
+        
+def test_integral_scale(plot=False):
+    print("Testing integral scale calculation function")
+    t = np.linspace(0, 1, num=1000)
+    u = 0.1*np.random.randn(len(t))
+    u += 0.1*np.sin(2*np.pi*t)
+    print(integral_scale(u, t, tau2=1.0))
+    if plot:
+        tau, rho = autocorr_coeff(u, t, 0.0, 0.5)
+        plt.figure()
+        plt.plot(tau, rho)
+        plt.xlabel(r"$\tau$")
+        plt.ylabel(r"$\rho$")    
+        
+def test_append_hdf():
+    data = {"zeros(5)" : np.zeros(5),
+            "arange(5)" : np.arange(5)}
+    savehdf("test.h5", data, append=True)
+    print(loadhdf("test.h5"))
     

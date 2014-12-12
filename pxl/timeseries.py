@@ -129,7 +129,7 @@ def loadcsv(filename):
     return data
     
 def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
-            as_dataframe=False):
+            as_dataframe=False, append=False):
     """Saves a dictionary of arrays to file--similar to how scipy.io.savemat 
     works."""
     if as_dataframe:
@@ -138,7 +138,13 @@ def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
     else:
         with _h5py.File(filename, mode) as f:
             for key, value in datadict.items():
-                f[groupname + "/" + key] = value
+                if append:
+                    try:
+                        f[groupname + "/" + key] = np.append(f[groupname + "/" + key], value)
+                    except KeyError:
+                        f[groupname + "/" + key] = value
+                else:
+                    f[groupname + "/" + key] = value
             if metadata:
                 for key, value in metadata.items():
                     f[groupname].attrs[key] = value
@@ -188,7 +194,7 @@ def build_plane_arrays(x, y, qlist):
         qlistp = qlistp[0]
     return xv, yv, qlistp
     
-def calc_corr_coeff(x1, x2, t, tau1, tau2):
+def corr_coeff(x1, x2, t, tau1, tau2):
     """Computes lagged correlation coefficient for two time series."""
     dt = t[1] - t[0]
     tau = np.arange(tau1, tau2+dt, dt)
@@ -206,8 +212,16 @@ def calc_corr_coeff(x1, x2, t, tau1, tau2):
         rho[n] = np.mean(seg1*seg2)/seg1.std()/seg2.std()
     return tau, rho
 
-def calc_autocorr_coeff(x, t, tau1, tau2):
-    return calc_corr_coeff(x, x, t, tau1, tau2)
+def autocorr_coeff(x, t, tau1, tau2):
+    return corr_coeff(x, x, t, tau1, tau2)
+    
+def integral_scale(u, t, tau1=0.0, tau2=1.0):
+    """Calculates the integral scale of a time series by integrating up to
+    the first zero crossing."""
+    tau, rho = autocorr_coeff(u, t, tau1, tau2)
+    zero_cross_ind = np.where(np.diff(np.sign(rho)))[0][0]
+    int_scale = np.trapz(rho[:zero_cross_ind], tau[:zero_cross_ind])
+    return int_scale
     
 if __name__ == "__main__":
     pass
