@@ -92,3 +92,24 @@ def test_save_hdf_df_to_dict():
     os.remove("test.h5")
     assert((data1["test"] == data["test"]).all())
     print("PASS")
+    
+def test_runningstd():
+    """
+    Tests the running standard deviation calculation function in the 
+    `timeseries` module.
+    """
+    print("Testing timeseries.runningstd")
+    t = np.linspace(0, 10, 10000)
+    a = np.sin(2*np.pi*t)
+    a += np.random.randn(len(t))
+    t_std, a_std = runningstd(t, a, 1000)
+    print("Mean of running standard deviation:", a_std.mean())
+    print("Standard deviation of test time series:", a.std())
+    assert(np.abs(a_std.mean() - a.std()) < 0.05)
+    plt.figure()
+    plt.plot(t_std, a_std)
+    plt.ylim((-4, 4))
+    plt.figure()
+    plt.plot(t, a)
+    plt.show()
+    print("PASS")

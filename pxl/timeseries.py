@@ -6,6 +6,7 @@ This is a collection of useful time series analysis functions.
 from __future__ import division, print_function
 import numpy as np
 from scipy.signal import lfilter
+import scipy.stats
 import json
 import pandas as _pd
 import h5py as _h5py
@@ -20,12 +21,13 @@ def sigmafilter(data, sigmas, passes):
     return data
 
 def psd(t, data, window=None, n_band_average=1):
-    """Computes one-sided power spectral density. Subtracts mean.
-       Returns f, psd.
+    """
+    Computes one-sided power spectral density. Subtracts mean. Returns f, psd.
        
-       Windows
-       -------
-         * "Hanning" """
+    Windows
+    -------
+      * "Hanning" 
+    """
     dt = t[1] - t[0]
     N = len(data)
     data = data - np.mean(data)
@@ -45,17 +47,17 @@ def psd(t, data, window=None, n_band_average=1):
             psd[n] = np.mean(s_raw[n*n_band_average:(n+1)*n_band_average])
     return f, psd
     
-def runningstd(t, data, samples, overlap=None):
-    """This function computes the running standard deviation of 
-    a time series"""
-    ne = int(np.floor(len(t)/samples))
+def runningstd(t, data, width):
+    """
+    This function computes the running standard deviation of 
+    a time series. Returns `t_new`, `std_r`.
+    """
+    ne = len(t) - width
     t_new = np.zeros(ne)
     std_r = np.zeros(ne)
     for i in range(ne):
-        t_new[i] = np.mean(t[i*samples:(i+1)*samples])
-        datasegment = data[i*samples:(i+1)*samples]
-        datasegment = datasegment[~np.isnan(datasegment)]
-        std_r[i] = np.std(datasegment)
+        t_new[i] = np.mean(t[i:i+width+1])
+        std_r[i] = scipy.stats.nanstd(data[i:i+width+1])
     return t_new, std_r
     
 def smooth(data, fw):

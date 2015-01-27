@@ -5,4 +5,5 @@ if __name__ == "__main__":
 #    test_spectrum_band_averaging()
 #    test_autocorrelation()
 #    test_integral_scale(plot=True)
-    test_save_hdf_df_to_dict()
+#    test_save_hdf_df_to_dict()
+    test_runningstd()
