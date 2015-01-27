@@ -2,6 +2,8 @@ from __future__ import division, print_function
 from .. import timeseries
 from ..timeseries import *
 import matplotlib.pyplot as plt
+import pandas as pd
+import os
 
 def test_autocorrelation():
     print("Testing autocorrelation function")
@@ -81,3 +83,12 @@ def test_append_hdf():
     savehdf("test.h5", data, append=True)
     print(loadhdf("test.h5"))
     
+def test_save_hdf_df_to_dict():
+    print("Testing savehdf with a pandas DataFrame")
+    data = pd.DataFrame()
+    data["test"] = np.zeros(10)
+    savehdf("test.h5", data)
+    data1 = loadhdf("test.h5")
+    os.remove("test.h5")
+    assert((data1["test"] == data["test"]).all())
+    print("PASS")

@@ -5,16 +5,16 @@ from distutils.core import setup
 from pxl import __version__ as version
 
 setup(
-    name='PXL',
+    name="PXL",
     version=version,
-    author='Pete Bachant',
-    author_email='petebachant@gmail.com',
-    packages=['pxl'],
+    author="Pete Bachant",
+    author_email="petebachant@gmail.com",
+    packages=["pxl", "pxl.tests"],
     scripts=[],
-    url='https://github.com/petebachant/pxl.git',
-    license='GPL v3',
-    description='Extra functions built on NumPy, SciPy, pandas, matplotlib, etc.',
-    long_description=open('README.md').read(),
+    url="https://github.com/petebachant/pxl.git",
+    license="GPL v3",
+    description="Extra functions built on NumPy, SciPy, pandas, matplotlib, etc.",
+    long_description=open("README.md").read(),
     install_requires=["numpy", "scipy", "pandas", "matplotlib"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
