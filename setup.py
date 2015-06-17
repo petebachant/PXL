@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 from pxl import __version__ as version
 
 setup(
@@ -15,7 +18,7 @@ setup(
     license="GPL v3",
     description="Extra functions built on NumPy, SciPy, pandas, matplotlib, etc.",
     long_description=open("README.md").read(),
-    install_requires=["numpy", "scipy", "pandas", "matplotlib"],
+    install_requires=["numpy", "scipy", "pandas", "matplotlib", "seaborn"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Science/Research",
