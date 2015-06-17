@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun 02 13:07:41 2013
-
-@author: Pete
+This module contains functions for changing matplotlib styles.
 """
+from __future__ import division, print_function
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -34,3 +33,16 @@ def setpltparams(fontsize=16, latex=True):
 
 def set_default_fontsize(size=23):
     matplotlib.rc("font", size=size)
+
+def set_sns(style="white", context="paper", scale=1.5):
+    """
+    Set plot style using seaborn.
+    """
+    try:
+        import seaborn as sns
+        sns.set(style=style, context=context, font_scale=scale,
+                rc={"lines.markersize": 8, "lines.markeredgewidth": 1.25,
+                "legend.fontsize": "small", "font.size": 12/1.5*scale,
+                "legend.frameon": True, "axes.formatter.limits": (-5, 5)})
+    except ImportError:
+        print("Install Seaborn to use styleplot.set_sns")
