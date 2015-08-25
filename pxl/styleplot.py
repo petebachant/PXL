@@ -34,15 +34,17 @@ def setpltparams(fontsize=16, latex=True):
 def set_default_fontsize(size=23):
     matplotlib.rc("font", size=size)
 
-def set_sns(style="white", context="paper", scale=1.5):
+def set_sns(style="white", context="paper", font_scale=1.5, rc={}):
     """
     Set plot style using seaborn.
     """
+    rcd = {"lines.markersize": 8, "lines.markeredgewidth": 1.25,
+           "legend.fontsize": "small", "font.size": 12/1.5*font_scale,
+           "legend.frameon": True, "axes.formatter.limits": (-5, 5)}
+    rcd.update(rc)
+    rc = rcd
     try:
         import seaborn as sns
-        sns.set(style=style, context=context, font_scale=scale,
-                rc={"lines.markersize": 8, "lines.markeredgewidth": 1.25,
-                "legend.fontsize": "small", "font.size": 12/1.5*scale,
-                "legend.frameon": True, "axes.formatter.limits": (-5, 5)})
+        sns.set(style=style, context=context, font_scale=font_scale, rc=rc)
     except ImportError:
         print("Install Seaborn to use styleplot.set_sns")

@@ -10,5 +10,5 @@ def test_all():
     test_runningstd()
 
 if __name__ == "__main__":
-    test_set_sns(scale=2)
+    test_set_sns(font_scale=2)
     test_runningstd()

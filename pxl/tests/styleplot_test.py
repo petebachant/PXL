@@ -14,4 +14,5 @@ def test_set_sns(**args):
     plt.xlabel(r"$T^{est}$")
     plt.ylabel("Test")
     plt.legend()
+    plt.tight_layout()
     plt.show()
