@@ -20,14 +20,14 @@ def second_order_diff(arr, x):
     dxb = (x[-1] - x[-3])/2
     # Calculate dx array for central difference
     dx = (x[2:] - x[:-2])/2
-    # Pre-allocate zeros array for difference array
-    darr = np.zeros(len(arr))
     # For first data point, use 2nd order forward difference
-    darr[0] = (-3*arr[0] + 4*arr[1] - arr[2])/(2*dxf)
+    first = (-3*arr[0] + 4*arr[1] - arr[2])/(2*dxf)
     # For last point, use 2nd order backward difference
-    darr[-1] = (3*arr[-1] - 4*arr[-2] + arr[-3])/(2*dxb)
+    last = (3*arr[-1] - 4*arr[-2] + arr[-3])/(2*dxb)
     # For all interior points, use 2nd order central difference
-    darr[1:-1] = (arr[2:] - arr[:-2])/(2*dx)
+    interior = (arr[2:] - arr[:-2])/(2*dx)
+    # Create entire array
+    darr = np.concatenate(([first], interior, [last]))
     return darr
 
 
