@@ -11,8 +11,7 @@ import h5py as _h5py
 
 
 def savejson(filename, datadict):
-    """
-    Save data from a dictionary in JSON format. Note that this only
+    """Save data from a dictionary in JSON format. Note that this only
     works to the second level of the dictionary with Numpy arrays.
     """
     for key, value in datadict.items():
@@ -27,10 +26,11 @@ def savejson(filename, datadict):
 
 
 def loadjson(filename, asnparrays=False):
-    """
-    Load data from text file in JSON format. Numpy arrays are converted
-    if specified with the `asnparrays` keyword argument. Note that this only
-    works to the second level of the dictionary. Returns a single dict.
+    """Load data from text file in JSON format.
+
+    Numpy arrays are converted if specified with the `asnparrays` keyword
+    argument. Note that this only works to the second level of the dictionary.
+    Returns a single dict.
     """
     with open(filename) as f:
         data = json.load(f)
@@ -56,9 +56,9 @@ def savecsv(filename, datadict, mode="w"):
 
 
 def loadcsv(filename):
-    """
-    Load data from CSV file. Returns a single dict with column names as
-    keys.
+    """Load data from CSV file.
+
+    Returns a single dict with column names as keys.
     """
     dataframe = _pd.read_csv(filename)
     data = {}
@@ -69,8 +69,7 @@ def loadcsv(filename):
 
 def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
             as_dataframe=False, append=False):
-    """
-    Save a dictionary of arrays to file--similar to how `scipy.io.savemat`
+    """Save a dictionary of arrays to file--similar to how `scipy.io.savemat`
     works. If `datadict` is a DataFrame, it will be converted automatically.
     """
     if as_dataframe:
@@ -94,9 +93,8 @@ def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
 
 
 def loadhdf(filename, groupname="data", to_dataframe=False):
-    """
-    Load all data from top level of HDF5 file--similar to how scipy.io.loadmat
-    works.
+    """Load all data from top level of HDF5 file--similar to how
+    `scipy.io.loadmat` works.
     """
     data = {}
     with _h5py.File(filename, "r") as f:

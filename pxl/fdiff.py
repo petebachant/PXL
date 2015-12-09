@@ -7,10 +7,11 @@ import numpy as np
 
 
 def second_order_diff(arr, x):
-    """Computes second order difference of an array, using 2nd order forward
-    difference for first point, 2nd order central difference for interior,
-    and 2nd order backward difference for last point, returning an array the
-    same length as the input array.
+    """Compute second order difference of an array.
+
+    A 2nd order forward difference is used for the first point, 2nd order
+    central difference for interior, and 2nd order backward difference for last
+    point, returning an array the same length as the input array.
     """
     # Convert to array, so this will work with pandas Series
     arr = np.array(arr)

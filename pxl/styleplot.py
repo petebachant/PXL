@@ -2,9 +2,11 @@
 """
 This module contains functions for changing matplotlib styles.
 """
+
 from __future__ import division, print_function
 import matplotlib
 import matplotlib.pyplot as plt
+
 
 def styleplot():
     font = {"family":"serif","serif":"cmr10","size":23}
@@ -16,6 +18,7 @@ def styleplot():
     matplotlib.rc("legend", **legend)
     matplotlib.rc("xtick", **{"major.pad":12})
     plt.tight_layout()
+
 
 def setpltparams(fontsize=16, latex=True):
     if latex:
@@ -31,13 +34,13 @@ def setpltparams(fontsize=16, latex=True):
     matplotlib.rc("legend", **legend)
     matplotlib.rc("xtick", **{"major.pad":12})
 
+
 def set_default_fontsize(size=23):
     matplotlib.rc("font", size=size)
 
+
 def set_sns(style="white", context="paper", font_scale=1.5, rc={}):
-    """
-    Set plot style using seaborn.
-    """
+    """Set plot style using seaborn."""
     rcd = {"lines.markersize": 8, "lines.markeredgewidth": 1.25,
            "legend.fontsize": "small", "font.size": 12/1.5*font_scale,
            "legend.frameon": True, "axes.formatter.limits": (-5, 5),

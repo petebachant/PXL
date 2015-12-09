@@ -12,7 +12,7 @@ from .io import *
 
 
 def sigmafilter(data, sigmas, passes):
-    """Removes datapoints outside of a specified standard deviation range."""
+    """Remove datapoints outside of a specified standard deviation range."""
     for n in range(passes):
         meandata = np.mean(data[~np.isnan(data)])
         sigma = np.std(data[~np.isnan(data)])
@@ -20,13 +20,21 @@ def sigmafilter(data, sigmas, passes):
         data[data < meandata-sigmas*sigma] = np.nan
     return data
 
-def psd(t, data, window=None, n_band_average=1):
-    """
-    Computes one-sided power spectral density. Subtracts mean. Returns f, psd.
 
-    Windows
+def psd(t, data, window=None, n_band_average=1):
+    """Compute one-sided power spectral density, subtracting mean automatically.
+
+    Parameters
+    ----------
+    t : Time array
+    data : Time series data
+    window : {None, "Hanning"}
+    n_band_average : Number of samples over which to band average
+
+    Returns
     -------
-      * "Hanning"
+    f : Frequency array
+    psd : Spectral density array
     """
     dt = t[1] - t[0]
     N = len(data)
@@ -47,10 +55,11 @@ def psd(t, data, window=None, n_band_average=1):
             psd[n] = np.mean(s_raw[n*n_band_average:(n+1)*n_band_average])
     return f, psd
 
+
 def runningstd(t, data, width):
-    """
-    This function computes the running standard deviation of
-    a time series. Returns `t_new`, `std_r`.
+    """Compute the running standard deviation of a time series.
+
+    Returns `t_new`, `std_r`.
     """
     ne = len(t) - width
     t_new = np.zeros(ne)
@@ -60,17 +69,20 @@ def runningstd(t, data, width):
         std_r[i] = scipy.stats.nanstd(data[i:i+width+1])
     return t_new, std_r
 
+
 def smooth(data, fw):
-    """Smooths data with a moving average."""
+    """Smooth data with a moving average."""
     if fw == 0:
         fdata = data
     else:
         fdata = lfilter(np.ones(fw)/fw, 1, data)
     return fdata
 
+
 def calcstats(data, t1, t2, sr):
-    """Calculates the mean and standard deviation of some array between
-    t1 and t2 provided the sample rate sr."""
+    """Calculate the mean and standard deviation of some array between
+    t1 and t2 provided the sample rate sr.
+    """
     dataseg = data[sr*t1:sr*t2]
     meandata = np.mean(dataseg[~np.isnan(dataseg)])
     stddata = np.std(dataseg[~np.isnan(dataseg)])
@@ -86,8 +98,9 @@ def average_over_area(q, x, y):
 
 
 def build_plane_arrays(x, y, qlist):
-    """Builds a 2-D array out of data taken in the same plane, for contour
-    plotting."""
+    """Build a 2-D array out of data taken in the same plane, for contour
+    plotting.
+    """
     if type(qlist) is not list:
         return_list = False
         qlist = [qlist]
@@ -106,8 +119,9 @@ def build_plane_arrays(x, y, qlist):
         qlistp = qlistp[0]
     return xv, yv, qlistp
 
+
 def corr_coeff(x1, x2, t, tau1, tau2):
-    """Computes lagged correlation coefficient for two time series."""
+    """Compute lagged correlation coefficient for two time series."""
     dt = t[1] - t[0]
     tau = np.arange(tau1, tau2+dt, dt)
     rho = np.zeros(len(tau))
@@ -124,16 +138,17 @@ def corr_coeff(x1, x2, t, tau1, tau2):
         rho[n] = np.mean(seg1*seg2)/seg1.std()/seg2.std()
     return tau, rho
 
+
 def autocorr_coeff(x, t, tau1, tau2):
+    """Calculate the autocorrelation coefficient."""
     return corr_coeff(x, x, t, tau1, tau2)
 
+
 def integral_scale(u, t, tau1=0.0, tau2=1.0):
-    """Calculates the integral scale of a time series by integrating up to
-    the first zero crossing."""
+    """Calculate the integral scale of a time series by integrating up to
+    the first zero crossing.
+    """
     tau, rho = autocorr_coeff(u, t, tau1, tau2)
     zero_cross_ind = np.where(np.diff(np.sign(rho)))[0][0]
     int_scale = np.trapz(rho[:zero_cross_ind], tau[:zero_cross_ind])
     return int_scale
-
-if __name__ == "__main__":
-    pass
