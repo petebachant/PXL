@@ -4,6 +4,7 @@ from ..timeseries import *
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+from uncertainties import unumpy
 
 
 def test_autocorrelation():
@@ -52,6 +53,21 @@ def test_average_over_area():
     y = np.array([0., 1.])
     q = np.array([[1.0, 0., 0., 0., 0., 0., 1.0],
                   [1.0, 0., 0., 0., 0., 0., 1.0]])
+    ave = average_over_area(q, x, y)
+    print("Computed average is", ave)
+    assert np.abs(ave - 0.33333333333333) < 1e-12
+
+
+def test_average_over_area_uncertainties():
+    """Test `average_over_area` with uncertainties."""
+    x = np.array([-6.0, -2.0, -1.0, 0.0, 1.0, 2.0, 6.0])
+    y = np.array([0., 1.])
+    q = np.array([[1.0, 0., 0., 0., 0., 0., 1.0],
+                  [1.0, 0., 0., 0., 0., 0., 1.0]])
+    # Convert arrays to have uncertainties
+    x = unumpy.uarray(x, 1e-3)
+    y = unumpy.uarray(y, 0.6e-2)
+    q = unumpy.uarray(q, 1e-2)
     ave = average_over_area(q, x, y)
     print("Computed average is", ave)
     assert np.abs(ave - 0.33333333333333) < 1e-12
