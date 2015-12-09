@@ -40,7 +40,8 @@ def set_sns(style="white", context="paper", font_scale=1.5, rc={}):
     """
     rcd = {"lines.markersize": 8, "lines.markeredgewidth": 1.25,
            "legend.fontsize": "small", "font.size": 12/1.5*font_scale,
-           "legend.frameon": True, "axes.formatter.limits": (-5, 5)}
+           "legend.frameon": True, "axes.formatter.limits": (-5, 5),
+           "axes.grid": True}
     rcd.update(rc)
     rc = rcd
     try:
