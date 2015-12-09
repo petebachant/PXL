@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 from uncertainties import unumpy
+from nose.tools import assert_almost_equal
 
 
 def test_autocorrelation():
@@ -100,3 +101,24 @@ def test_runningstd():
     plt.figure()
     plt.plot(t, a)
     plt.show()
+
+
+def test_combine_std():
+    """Test `timeseries.combine_std`."""
+    n = 1e5
+    ts = np.random.normal(size=n)
+    std_tot = ts.std()
+    ts1 = ts[:n/2]
+    ts2 = ts[n/2:]
+    n1 = len(ts1)
+    mean1 = ts1.mean()
+    std1 = ts1.std()
+    n2 = len(ts2)
+    mean2 = ts2.mean()
+    std2 = ts2.std()
+    assert_almost_equal(ts.mean(), np.mean((mean1, mean2)))
+    assert n1 + n2 == n
+    n = np.array((n1, n2))
+    mean = np.array((mean1, mean2))
+    std = np.array((std1, std2))
+    assert_almost_equal(std_tot, combine_std(n, mean, std), places=2)
