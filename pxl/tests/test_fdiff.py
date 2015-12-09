@@ -12,7 +12,6 @@ def test_second_order_diff(plot=False):
     # Create a non-equally spaced x vector
     x = np.append(np.linspace(0, np.pi, 100),
                   np.linspace(np.pi + 0.01, 2*np.pi, 400))
-    dx = x[1] - x[0]
     u = np.sin(x)
     dudx = second_order_diff(u, x)
     # Assert that this function is almost identical to cos(x)
