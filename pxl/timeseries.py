@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-A collection of useful time series analysis functions.
-"""
+"""A collection of useful time series analysis functions."""
 
 from __future__ import division, print_function
 import numpy as np
 from scipy.signal import lfilter
+from scipy.optimize import curve_fit
 import scipy.stats
 import pandas as _pd
 from .io import *
@@ -240,3 +239,43 @@ def calc_exp_uncertainty(n, std, combined_unc, sys_unc, rel_unc=0.25,
     t = scipy.stats.t.interval(alpha=0.95, df=nu_x)[-1]
     exp_unc = t*combined_unc
     return exp_unc, nu_x
+
+
+def find_amp_phase(angle, data, npeaks=3):
+    """Estimate amplitude and phase of an approximately sinusoidal quantity
+    using `scipy.optimize.curve_fit`.
+
+    Phase is defined as the angle at which the cosine curve fit reaches its
+    first peak. For example:
+
+        data_fit = amp*np.cos(npeaks*(angle - phase)) + mean_data
+
+    Parameters
+    ----------
+    angle : numpy array
+        Time series of angle values in radians
+    data : numpy array
+        Time series of data to be fit
+    npeaks : int
+        Number of peaks per revolution, or normalized frequency
+
+    Returns
+    -------
+    amp : float
+        Amplitude of regressed cosine
+    phase : float
+        Angle of the first peak in radians
+    """
+    # First subtract the mean of the data
+    data = data - data.mean()
+    # Make some guesses for parameters
+    amp_guess = (np.max(data) - np.min(data))/2
+    phase_guess = angle[np.where(data == data.max())[0][0]] % (np.pi*2/npeaks)
+    # Define the function we will try to fit to
+    def func(angle, amp, phase, mean):
+        return amp*np.cos(npeaks*(angle - phase)) + mean
+    # Calculate fit
+    p0 = amp_guess, phase_guess, 0.0
+    popt, pcov = curve_fit(func, angle, data, p0=p0)
+    amp, phase, mean = popt
+    return amp, phase
