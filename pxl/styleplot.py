@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-This module contains functions for changing matplotlib styles.
-"""
+"""This module contains helper functions for working with matplotlib."""
 
 from __future__ import division, print_function
 import matplotlib
@@ -52,3 +50,11 @@ def set_sns(style="white", context="paper", font_scale=1.5, rc={}):
         sns.set(style=style, context=context, font_scale=font_scale, rc=rc)
     except ImportError:
         print("Install Seaborn to use styleplot.set_sns")
+
+
+def label_subplot(ax=None, x=0.5, y=-0.25, text="(a)", **kwargs):
+    """Create a subplot label."""
+    if ax is None:
+        ax = plt.gca()
+    ax.text(x=x, y=y, s=text, transform=ax.transAxes,
+            horizontalalignment="center", verticalalignment="top", **kwargs)
