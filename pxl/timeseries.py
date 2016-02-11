@@ -246,7 +246,7 @@ def find_amp_phase(angle, data, npeaks=3):
     using `scipy.optimize.curve_fit`.
 
     Phase is defined as the angle at which the cosine curve fit reaches its
-    first peak. For example:
+    first peak. It is assumed that phase is positive. For example:
 
         data_fit = amp*np.cos(npeaks*(angle - phase)) + mean_data
 
