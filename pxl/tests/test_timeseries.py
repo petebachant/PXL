@@ -127,7 +127,8 @@ def test_combine_std():
 def test_find_amp_phase(plot=False):
     # Create a time series with a known amplitude and phase
     amp = 2.4
-    phase = 1.5
+    phase = np.deg2rad(121)
+    min_phase = np.deg2rad(10)
     mean = 0.5
     npeaks = 3
     places = 2 # Decimal places the values should match
@@ -138,7 +139,8 @@ def test_find_amp_phase(plot=False):
     data = amp*np.cos(npeaks*(angle - phase)) + mean
     noise = np.random.normal(0, noise_std, len(data))
     data += noise
-    amp_fit, phase_fit = find_amp_phase(angle, data, npeaks)
+    amp_fit, phase_fit = find_amp_phase(angle, data, npeaks,
+                                        min_phase=min_phase)
     if not plot:
         assert_almost_equal(amp, amp_fit, places=places)
         assert_almost_equal(phase, phase_fit, places=places)
@@ -155,7 +157,8 @@ def test_find_amp_phase(plot=False):
         plt.plot(angle_deg_old, amp_fit*np.cos(npeaks*(angle_old - phase_fit))
                  + mean, linewidth=4, alpha=0.6, color="red")
         plt.plot(angle_deg, data, marker="^", color="g")
-    amp_fit, phase_fit = find_amp_phase(angle, data, npeaks)
+    amp_fit, phase_fit = find_amp_phase(angle, data, npeaks,
+                                        min_phase=min_phase)
     if not plot:
         assert_almost_equal(amp, amp_fit, places=places)
         assert_almost_equal(phase, phase_fit, places=places)

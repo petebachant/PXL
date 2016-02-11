@@ -241,7 +241,7 @@ def calc_exp_uncertainty(n, std, combined_unc, sys_unc, rel_unc=0.25,
     return exp_unc, nu_x
 
 
-def find_amp_phase(angle, data, npeaks=3):
+def find_amp_phase(angle, data, npeaks=3, min_amp=None, min_phase=None):
     """Estimate amplitude and phase of an approximately sinusoidal quantity
     using `scipy.optimize.curve_fit`.
 
@@ -258,6 +258,8 @@ def find_amp_phase(angle, data, npeaks=3):
         Time series of data to be fit
     npeaks : int
         Number of peaks per revolution, or normalized frequency
+    min_phase : float
+        Minimum phase to allow for guess to least squares fit
 
     Returns
     -------
@@ -268,9 +270,20 @@ def find_amp_phase(angle, data, npeaks=3):
     """
     # First subtract the mean of the data
     data = data - data.mean()
-    # Make some guesses for parameters
-    amp_guess = (np.max(data) - np.min(data))/2
-    phase_guess = angle[np.where(data == data.max())[0][0]] % (np.pi*2/npeaks)
+    # Make some guesses for parameters from a subset of data starting at an
+    # integer multiple of periods
+    if angle[0] != 0.0:
+        angle1 = angle[0] + (2*np.pi/npeaks - (2*np.pi/npeaks) % angle[0])
+    else:
+        angle1 = angle[0]
+    angle1 += min_phase
+    angle2 = angle1 + 2*np.pi/npeaks
+    ind = np.logical_and(angle >= angle1, angle <= angle2)
+    angle_sub = angle[ind]
+    data_sub = data[ind]
+    amp_guess = (data_sub.max() - data_sub.min())/2
+    phase_guess = angle[np.where(data_sub == data_sub.max())[0][0]] \
+            % (np.pi*2/npeaks)
     # Define the function we will try to fit to
     def func(angle, amp, phase, mean):
         return amp*np.cos(npeaks*(angle - phase)) + mean
