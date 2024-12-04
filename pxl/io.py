@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-This is a collection of useful I/O functions.
-"""
+"""This is a collection of useful I/O functions."""
 
 from __future__ import division, print_function
-import numpy as np
+
 import json
-import pandas as _pd
+
 import h5py as _h5py
+import numpy as np
+import pandas as _pd
 
 
 def savejson(filename, datadict):
@@ -47,7 +46,7 @@ def loadjson(filename, asnparrays=False):
 
 def savecsv(filename, datadict, mode="w"):
     """Save a dictionary of data to CSV."""
-    if mode == "a" :
+    if mode == "a":
         header = False
     else:
         header = True
@@ -67,8 +66,15 @@ def loadcsv(filename):
     return data
 
 
-def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
-            as_dataframe=False, append=False):
+def savehdf(
+    filename,
+    datadict,
+    groupname="data",
+    mode="a",
+    metadata=None,
+    as_dataframe=False,
+    append=False,
+):
     """Save a dictionary of arrays to file--similar to how `scipy.io.savemat`
     works. If `datadict` is a DataFrame, it will be converted automatically.
     """
@@ -82,7 +88,9 @@ def savehdf(filename, datadict, groupname="data", mode="a", metadata=None,
             for key, value in datadict.items():
                 if append:
                     try:
-                        f[groupname + "/" + key] = np.append(f[groupname + "/" + key], value)
+                        f[groupname + "/" + key] = np.append(
+                            f[groupname + "/" + key], value
+                        )
                     except KeyError:
                         f[groupname + "/" + key] = value
                 else:
@@ -107,14 +115,14 @@ def loadhdf(filename, groupname="data", to_dataframe=False):
 
 
 def save_hdf_metadata(filename, metadata, groupname="data", mode="a"):
-    """"Save a dictionary of metadata to a group's attrs."""
+    """Save a dictionary of metadata to a group's attrs."""
     with _h5py.File(filename, mode) as f:
         for key, val in metadata.items():
             f[groupname].attrs[key] = val
 
 
 def load_hdf_metadata(filename, groupname="data"):
-    """"Load attrs of the desired group into a dictionary."""
+    """Load attrs of the desired group into a dictionary."""
     with _h5py.File(filename, "r") as f:
         data = dict(f[groupname].attrs)
     return data
