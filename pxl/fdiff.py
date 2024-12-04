@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Finite difference utilities
-"""
+"""Finite difference utilities."""
 
 import numpy as np
 
@@ -12,6 +9,9 @@ def second_order_diff(arr, x):
     A 2nd order forward difference is used for the first point, 2nd order
     central difference for interior, and 2nd order backward difference for last
     point, returning an array the same length as the input array.
+
+    This probably doesn't need to exist since NumPy has a ``gradient``
+    function.
     """
     # Convert to array, so this will work with pandas Series
     arr = np.array(arr)
@@ -30,7 +30,3 @@ def second_order_diff(arr, x):
     # Create entire array
     darr = np.concatenate(([first], interior, [last]))
     return darr
-
-
-if __name__ == "__main__":
-    pass
