@@ -15,8 +15,8 @@ def sigmafilter(data, sigmas, passes):
     for n in range(passes):
         meandata = np.mean(data[~np.isnan(data)])
         sigma = np.std(data[~np.isnan(data)])
-        data[data > meandata+sigmas*sigma] = np.nan
-        data[data < meandata-sigmas*sigma] = np.nan
+        data[data > meandata + sigmas * sigma] = np.nan
+        data[data < meandata - sigmas * sigma] = np.nan
     return data
 
 
@@ -39,19 +39,23 @@ def psd(t, data, window=None, n_band_average=1):
     N = len(data)
     data = data - np.mean(data)
     if window == "Hanning":
-        data = data*np.hanning(N)
+        data = data * np.hanning(N)
     f = np.fft.fftfreq(N, dt)
     y = np.fft.fft(data)
-    f = f[0:N/2]
-    psd = (2*dt/N)*abs(y)**2
-    psd = np.real(psd[0:N/2])
+    f = f[0 : N // 2]
+    psd = (2 * dt / N) * abs(y) ** 2
+    psd = np.real(psd[0 : N // 2])
     if n_band_average > 1:
-        f_raw, s_raw = f*1, psd*1
-        f = np.zeros(len(f_raw)//n_band_average)
-        psd = np.zeros(len(f_raw)//n_band_average)
-        for n in range(len(f_raw)//n_band_average):
-            f[n] = np.mean(f_raw[n*n_band_average:(n+1)*n_band_average])
-            psd[n] = np.mean(s_raw[n*n_band_average:(n+1)*n_band_average])
+        f_raw, s_raw = f * 1, psd * 1
+        f = np.zeros(len(f_raw) // n_band_average)
+        psd = np.zeros(len(f_raw) // n_band_average)
+        for n in range(len(f_raw) // n_band_average):
+            f[n] = np.mean(
+                f_raw[n * n_band_average : (n + 1) * n_band_average]
+            )
+            psd[n] = np.mean(
+                s_raw[n * n_band_average : (n + 1) * n_band_average]
+            )
     return f, psd
 
 
@@ -64,8 +68,8 @@ def runningstd(t, data, width):
     t_new = np.zeros(ne)
     std_r = np.zeros(ne)
     for i in range(ne):
-        t_new[i] = np.mean(t[i:i+width+1])
-        std_r[i] = scipy.stats.nanstd(data[i:i+width+1])
+        t_new[i] = np.mean(t[i : i + width + 1])
+        std_r[i] = np.nanstd(data[i : i + width + 1])
     return t_new, std_r
 
 
@@ -74,7 +78,7 @@ def smooth(data, fw):
     if fw == 0:
         fdata = data
     else:
-        fdata = lfilter(np.ones(fw)/fw, 1, data)
+        fdata = lfilter(np.ones(fw) / fw, 1, data)
     return fdata
 
 
@@ -82,7 +86,7 @@ def calcstats(data, t1, t2, sr):
     """Calculate the mean and standard deviation of some array between
     t1 and t2 provided the sample rate sr.
     """
-    dataseg = data[sr*t1:sr*t2]
+    dataseg = data[sr * t1 : sr * t2]
     meandata = np.mean(dataseg[~np.isnan(dataseg)])
     stddata = np.std(dataseg[~np.isnan(dataseg)])
     return meandata, stddata
@@ -91,9 +95,9 @@ def calcstats(data, t1, t2, sr):
 def average_over_area(q, x, y):
     """Averages a quantity `q` over a rectangular area given a 2D array and
     the x and y vectors for sample locations, using the trapezoidal rule"""
-    area = (np.max(x) - np.min(x))*(np.max(y) - np.min(y))
+    area = (np.max(x) - np.min(x)) * (np.max(y) - np.min(y))
     integral = np.trapz(np.trapz(q, y, axis=0), x)
-    return integral/area
+    return integral / area
 
 
 def build_plane_arrays(x, y, qlist):
@@ -105,15 +109,15 @@ def build_plane_arrays(x, y, qlist):
         qlist = [qlist]
     else:
         return_list = True
-    xv = x[np.where(y==y[0])[0]]
-    yv = y[np.where(x==x[0])[0]]
+    xv = x[np.where(y == y[0])[0]]
+    yv = y[np.where(x == x[0])[0]]
     qlistp = []
     for n in range(len(qlist)):
         qlistp.append(np.zeros((len(yv), len(xv))))
     for j in range(len(qlist)):
         for n in range(len(yv)):
-            i = np.where(y==yv[n])[0]
-            qlistp[j][n,:] = qlist[j][i]
+            i = np.where(y == yv[n])[0]
+            qlistp[j][n, :] = qlist[j][i]
     if not return_list:
         qlistp = qlistp[0]
     return xv, yv, qlistp
@@ -122,19 +126,19 @@ def build_plane_arrays(x, y, qlist):
 def corr_coeff(x1, x2, t, tau1, tau2):
     """Compute lagged correlation coefficient for two time series."""
     dt = t[1] - t[0]
-    tau = np.arange(tau1, tau2+dt, dt)
+    tau = np.arange(tau1, tau2 + dt, dt)
     rho = np.zeros(len(tau))
     for n in range(len(tau)):
-        i = np.abs(int(tau[n]/dt))
-        if tau[n] >= 0: # Positive lag, push x2 forward in time
-            seg2 = x2[0:-1-i]
+        i = np.abs(int(tau[n] / dt))
+        if tau[n] >= 0:  # Positive lag, push x2 forward in time
+            seg2 = x2[0 : -1 - i]
             seg1 = x1[i:-1]
-        elif tau[n] < 0: # Negative lag, push x2 back in time
-            seg1 = x1[0:-i-1]
+        elif tau[n] < 0:  # Negative lag, push x2 back in time
+            seg1 = x1[0 : -i - 1]
             seg2 = x2[i:-1]
         seg1 = seg1 - seg1.mean()
         seg2 = seg2 - seg2.mean()
-        rho[n] = np.mean(seg1*seg2)/seg1.std()/seg2.std()
+        rho[n] = np.mean(seg1 * seg2) / seg1.std() / seg2.std()
     return tau, rho
 
 
@@ -167,8 +171,8 @@ def combine_std(n, mean, std):
     std : numpy array of sample standard deviations
     """
     # Calculate weighted mean
-    mean_tot = np.sum(n*mean)/np.sum(n)
-    var_tot = np.sum(n*(std**2 + mean**2))/np.sum(n) - mean_tot**2
+    mean_tot = np.sum(n * mean) / np.sum(n)
+    var_tot = np.sum(n * (std**2 + mean**2)) / np.sum(n) - mean_tot**2
     return np.sqrt(var_tot)
 
 
@@ -192,14 +196,13 @@ def calc_multi_exp_unc(sys_unc, n, mean, std, dof, confidence=0.95):
     std_unc_combined = np.sqrt(std_combined**2 + sys_unc**2)
     dof = dof.sum()
     t_combined = scipy.stats.t.interval(alpha=confidence, df=dof)[-1]
-    exp_unc_combined = t_combined*std_unc_combined
+    exp_unc_combined = t_combined * std_unc_combined
     return exp_unc_combined
 
 
 def student_t(degrees_of_freedom, confidence=0.95):
     """Return Student-t statistic for given DOF and confidence interval."""
-    return scipy.stats.t.interval(alpha=confidence,
-                                  df=degrees_of_freedom)[-1]
+    return scipy.stats.t.interval(alpha=confidence, df=degrees_of_freedom)[-1]
 
 
 def calc_uncertainty(quantity, sys_unc, mean=True):
@@ -211,8 +214,9 @@ def calc_uncertainty(quantity, sys_unc, mean=True):
     return np.sqrt(std**2 + sys_unc**2)
 
 
-def calc_exp_uncertainty(n, std, combined_unc, sys_unc, rel_unc=0.25,
-                         confidence=0.95, mean=True):
+def calc_exp_uncertainty(
+    n, std, combined_unc, sys_unc, rel_unc=0.25, confidence=0.95, mean=True
+):
     """Calculate expanded uncertainty.
 
     Parameters
@@ -234,10 +238,10 @@ def calc_exp_uncertainty(n, std, combined_unc, sys_unc, rel_unc=0.25,
         s_x /= np.sqrt(n)
     nu_s_x = n - 1
     b = sys_unc
-    nu_b = 0.5*rel_unc**(-2)
-    nu_x = ((s_x**2 + b**2)**2)/(s_x**4/nu_s_x + b**4/nu_b)
+    nu_b = 0.5 * rel_unc ** (-2)
+    nu_x = ((s_x**2 + b**2) ** 2) / (s_x**4 / nu_s_x + b**4 / nu_b)
     t = scipy.stats.t.interval(alpha=0.95, df=nu_x)[-1]
-    exp_unc = t*combined_unc
+    exp_unc = t * combined_unc
     return exp_unc, nu_x
 
 
@@ -273,20 +277,25 @@ def find_amp_phase(angle, data, npeaks=3, min_amp=None, min_phase=None):
     # Make some guesses for parameters from a subset of data starting at an
     # integer multiple of periods
     if angle[0] != 0.0:
-        angle1 = angle[0] + (2*np.pi/npeaks - (2*np.pi/npeaks) % angle[0])
+        angle1 = angle[0] + (
+            2 * np.pi / npeaks - (2 * np.pi / npeaks) % angle[0]
+        )
     else:
         angle1 = angle[0]
     angle1 += min_phase
-    angle2 = angle1 + 2*np.pi/npeaks
+    angle2 = angle1 + 2 * np.pi / npeaks
     ind = np.logical_and(angle >= angle1, angle <= angle2)
     angle_sub = angle[ind]
     data_sub = data[ind]
-    amp_guess = (data_sub.max() - data_sub.min())/2
-    phase_guess = angle[np.where(data_sub == data_sub.max())[0][0]] \
-            % (np.pi*2/npeaks)
+    amp_guess = (data_sub.max() - data_sub.min()) / 2
+    phase_guess = angle[np.where(data_sub == data_sub.max())[0][0]] % (
+        np.pi * 2 / npeaks
+    )
+
     # Define the function we will try to fit to
     def func(angle, amp, phase, mean):
-        return amp*np.cos(npeaks*(angle - phase)) + mean
+        return amp * np.cos(npeaks * (angle - phase)) + mean
+
     # Calculate fit
     p0 = amp_guess, phase_guess, 0.0
     popt, pcov = curve_fit(func, angle, data, p0=p0)

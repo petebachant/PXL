@@ -1,13 +1,15 @@
 from __future__ import division, print_function
+
+import os
+
+import pandas as pd
+
 from .. import io
 from ..io import *
-import os
-import pandas as pd
 
 
 def test_append_hdf():
-    data = {"zeros(5)" : np.zeros(5),
-            "arange(5)" : np.arange(5)}
+    data = {"zeros(5)": np.zeros(5), "arange(5)": np.arange(5)}
     savehdf("test.h5", data, append=True)
     print(loadhdf("test.h5"))
 
