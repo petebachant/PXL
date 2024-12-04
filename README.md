@@ -9,7 +9,3 @@ matplotlib.
 Run
 
     pip install pxl
-
-or clone this directory and run
-
-    python setup.py install
