@@ -195,14 +195,14 @@ def calc_multi_exp_unc(sys_unc, n, mean, std, dof, confidence=0.95):
     std_combined /= np.sqrt(n.sum())
     std_unc_combined = np.sqrt(std_combined**2 + sys_unc**2)
     dof = dof.sum()
-    t_combined = scipy.stats.t.interval(alpha=confidence, df=dof)[-1]
+    t_combined = scipy.stats.t.interval(confidence, df=dof)[-1]
     exp_unc_combined = t_combined * std_unc_combined
     return exp_unc_combined
 
 
 def student_t(degrees_of_freedom, confidence=0.95):
     """Return Student-t statistic for given DOF and confidence interval."""
-    return scipy.stats.t.interval(alpha=confidence, df=degrees_of_freedom)[-1]
+    return scipy.stats.t.interval(confidence, df=degrees_of_freedom)[-1]
 
 
 def calc_uncertainty(quantity, sys_unc, mean=True):
@@ -240,7 +240,7 @@ def calc_exp_uncertainty(
     b = sys_unc
     nu_b = 0.5 * rel_unc ** (-2)
     nu_x = ((s_x**2 + b**2) ** 2) / (s_x**4 / nu_s_x + b**4 / nu_b)
-    t = scipy.stats.t.interval(alpha=0.95, df=nu_x)[-1]
+    t = scipy.stats.t.interval(confidence, df=nu_x)[-1]
     exp_unc = t * combined_unc
     return exp_unc, nu_x
 
