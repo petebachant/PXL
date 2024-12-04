@@ -35,6 +35,10 @@ def check_dependencies():
         import h5py
     except ImportError:
         install_requires.append("h5py")
+    try:
+        import uncertainties
+    except ImportError:
+        install_requires.append("uncertainties")
 
     return install_requires
 
