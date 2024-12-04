@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
 """A collection of useful time series analysis functions."""
 
 from __future__ import division, print_function
+
 import numpy as np
-from scipy.signal import lfilter
-from scipy.optimize import curve_fit
-import scipy.stats
 import pandas as _pd
+import scipy.stats
+from scipy.optimize import curve_fit
+from scipy.signal import lfilter
+
 from .io import *
 
 
